@@ -1,6 +1,0 @@
-databaseChangeLog:
-
-#  - include:
-#      file: db/changelog/object/0000-db.changelog-crto-example.yaml
-  - include:
-      file: db/changelog/object/0001-db-balger-raw-binance-card.yaml
