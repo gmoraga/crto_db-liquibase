@@ -1,0 +1,89 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 0000-0001-createTable-example
+      author: gdev
+      comment: Create table cripto_example
+      changes:
+      -  createTable:
+          schemaName: public
+          tableName: cripto_example
+          columns:  
+          -  column:
+              name: id
+              type: bigserial      
+              autoIncrement: true
+              constraints:
+                nullable: false
+                primaryKey: true
+          -  column:
+              name: create_dt
+              type: 'timestamp without time zone'
+              defaultValueComputed: current_timestamp at time zone 'UTC'
+              constraints:
+                nullable: false
+                primaryKey: true
+          -  column:
+              name: name
+              type: varchar(60)
+              constraints:
+                nullable: false  
+          -  column:
+              name: active
+              type: boolean
+              defaultValueBoolean: true
+              constraints:
+                nullable: false
+      - modifySql:
+          applyToRollback: false
+          dbms: postgresql
+          append: 
+            value: ' PARTITION BY RANGE (create_dt)'
+      
+  - changeSet:  
+       id: 0000-0002-sql-add-comment-cripto-example
+       author: gdev
+       comment: Add comment table cripto_example
+       changes:
+        -  setTableRemarks:
+            remarks: Example table
+            schemaName: public  
+            tableName: cripto_example
+        -  setColumnRemarks:
+            columnName: id
+            remarks: Identifier
+            schemaName: public  
+            tableName: cripto_example
+        -  setColumnRemarks:
+            columnName: create_dt
+            remarks: Record creation date
+            schemaName: public  
+            tableName: cripto_example
+        -  setColumnRemarks:
+            columnName: name
+            remarks: Name User
+            schemaName: public  
+            tableName: cripto_example
+        -  setColumnRemarks:
+            columnName: active
+            remarks: User is active or not
+            schemaName: public  
+            tableName: cripto_example
+
+  - changeSet:  
+       id: 0000-0003-sql-add-partition-cripto-example
+       author: gdev
+       comment: SQL add partition cripto_example 
+       changes:
+        -  sql:  
+            dbms: 'postgresql'  
+            endDelimiter: \nGO  
+            splitStatements: true  
+            sql: CREATE TABLE cripto_example_1980_2010 PARTITION OF cripto_example FOR VALUES FROM ('1980-01-01') TO ('2011-01-01');
+                 CREATE TABLE cripto_example_2011_2015 PARTITION OF cripto_example FOR VALUES FROM ('2011-01-01') TO ('2016-01-01');
+                 CREATE TABLE cripto_example_2016_2020 PARTITION OF cripto_example FOR VALUES FROM ('2016-01-01') TO ('2021-01-01');
+                 CREATE TABLE cripto_example_2021_2025 PARTITION OF cripto_example FOR VALUES FROM ('2021-01-01') TO ('2026-01-01');
+                 CREATE TABLE cripto_example_2026_2030 PARTITION OF cripto_example FOR VALUES FROM ('2026-01-01') TO ('2031-01-01');
+                 CREATE TABLE cripto_example_2031_2035 PARTITION OF cripto_example FOR VALUES FROM ('2031-01-01') TO ('2036-01-01');
+                 CREATE TABLE cripto_example_2036_2040 PARTITION OF cripto_example FOR VALUES FROM ('2036-01-01') TO ('2041-01-01');
+            stripComments: true

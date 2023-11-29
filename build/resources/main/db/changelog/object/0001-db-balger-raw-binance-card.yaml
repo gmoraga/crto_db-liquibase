@@ -1,0 +1,220 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 0001-0001-createTable-balgerRawBinanceCard
+      author: gdev
+      comment: Create table balger_raw_binance_card
+      changes:
+      - tagDatabase:  
+          tag: version-1.0
+      -  createTable:
+          schemaName: public
+          tableName: balger_raw_binance_card
+          columns:  
+          -  column:
+              name: id
+              type: bigserial      
+              autoIncrement: true
+              constraints:
+                primaryKey: true
+                nullable: false
+          -  column:
+              name: processed
+              type: boolean
+              defaultValueBoolean: false
+              constraints:
+                primaryKey: true
+                nullable: false
+          -  column:
+              name: apply
+              type: boolean
+              constraints:
+                nullable: true
+          -  column:
+              name: dt_create
+              type: 'timestamp without time zone'
+              defaultValueComputed: current_timestamp at time zone 'UTC'
+              constraints:
+                nullable: false
+          -  column:
+              name: dt_update
+              type: 'timestamp without time zone'
+              defaultValueComputed: current_timestamp at time zone 'UTC'
+              constraints:
+                nullable: false
+          -  column:
+              name: user_create
+              type: varchar(60)
+              constraints:
+                nullable: false
+          -  column:
+              name: user_update
+              type: varchar(60)
+              constraints:
+                nullable: false
+          -  column:
+              name: dt_transaction
+              type: 'timestamp without time zone'
+              defaultValueComputed: current_timestamp at time zone 'UTC'
+              constraints:
+                nullable: false
+          -  column:
+              name: method
+              type: varchar(60)
+              constraints:
+                nullable: false
+          -  column:
+              name: amount
+              type: varchar(60)
+              constraints:
+                nullable: false
+          -  column:
+              name: price
+              type: varchar(60)
+              constraints:
+                nullable: false
+          -  column:
+              name: fees
+              type: varchar(60)
+              constraints:
+                nullable: false
+          -  column:
+              name: final_amount
+              type: varchar(60)
+              constraints:
+                nullable: false
+          -  column:
+              name: status
+              type: varchar(60)
+              constraints:
+                nullable: false
+          -  column:
+              name: transaction_id
+              type: varchar(60)
+              constraints:
+                nullable: false
+      - modifySql:
+          applyToRollback: false
+          dbms: postgresql
+          append: 
+            value: 'PARTITION BY LIST (processed)'
+      
+  - changeSet:  
+      id: 0001-0002-addComment-balgerRawBinanceCard
+      author: gdev
+      comment: Add comment table balger-raw-binance-card
+      changes:
+      - tagDatabase:  
+          tag: version-1.0
+      -  setTableRemarks:
+          remarks: Binance Exchange raw records for credit cards and debit cards
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: id
+          remarks: Record identifier
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: processed
+          remarks: value that indicates whether or not the record has been processed from the raw table to the final table
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: apply
+          remarks: Value that indicates that the record qualifies or not to be processed to the definitive table
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: dt_create
+          remarks: Date the record was created
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: dt_update
+          remarks: Date the record was updated
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: user_create
+          remarks: User creating the record
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: user_update
+          remarks: User updating record
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: dt_transaction
+          remarks: Transaction date
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: method
+          remarks: Method by which the transaction was generated
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: amount
+          remarks: Transaction amount
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: price
+          remarks: Transaction price
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: fees
+          remarks: Transaction fees
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: final_amount
+          remarks: Transaction final amount
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: status
+          remarks: Transaction status
+          schemaName: public  
+          tableName: balger_raw_binance_card
+      -  setColumnRemarks:
+          columnName: transaction_id
+          remarks: Transaction id
+          schemaName: public  
+          tableName: balger_raw_binance_card
+
+  - changeSet:  
+      id: 0001-0003-createIndex-transactionIdProcessed-balgerRawBinanceCard
+      author: gdev 
+      comment: Create index transaction_id balger_raw_binance_card
+      changes:
+      - tagDatabase:  
+          tag: version-1.0
+      - createIndex:
+         columns:
+         - column:
+            name: transaction_id
+         - column:
+            name: processed
+         indexName: idx_transaction_id_processed
+         schemaName: public
+         tableName: balger_raw_binance_card 
+         unique: true
+
+  - changeSet:  
+      id: 0001-0004-sql-addPartition-balgerRawBinanceCard
+      author: gdev
+      comment: SQL add partition balger_raw_binance_card
+      changes:
+      - tagDatabase:  
+          tag: version-1.0
+      -  sql:  
+          dbms: 'postgresql'  
+          endDelimiter: \nGO  
+          splitStatements: true  
+          sql: CREATE TABLE balger_raw_binance_card_processed PARTITION OF balger_raw_binance_card FOR VALUES IN (true);
+               CREATE TABLE balger_raw_binance_card_not_processed PARTITION OF balger_raw_binance_card FOR VALUES IN (false);
+          stripComments: true
